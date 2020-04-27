@@ -14,15 +14,36 @@ class TransactionsRepository {
   }
 
   public all(): Transaction[] {
-    // TODO
+    return this.transactions;
   }
 
   public getBalance(): Balance {
-    // TODO
+    const filterTypes = (
+      transactions: Transaction[],
+      query: string,
+    ): Transaction[] => {
+      return transactions.filter(({ type }) => type === query);
+    };
+
+    const reducer = (accumulator: number, transaction: Transaction): number =>
+      accumulator + transaction.value;
+
+    const income = filterTypes(this.transactions, 'income').reduce(reducer, 0);
+    const outcome = filterTypes(this.transactions, 'outcome').reduce(
+      reducer,
+      0,
+    );
+
+    return {
+      income,
+      outcome,
+      total: income - outcome,
+    };
   }
 
-  public create(): Transaction {
-    // TODO
+  public create(transaction: Transaction): Transaction {
+    this.transactions.push(transaction);
+    return transaction;
   }
 }
 
